@@ -1,3 +1,3 @@
 window.addEventListener("DOMContentLoaded", function() {
-  require("ember-web-component-container/create-web-components");
+  require("ember-wc-container/create-web-components");
 });
