@@ -1,11 +1,11 @@
 {
-  "name": "ember-web-component-container",
+  "name": "ember-wc-container",
   "version": "0.0.0",
   "description": "The default blueprint for ember-cli addons.",
   "keywords": [
     "ember-addon"
   ],
-  "repository": "https://github.com/peopledoc/ember-web-component-container",
+  "repository": "https://github.com/rajasegar/ember-web-component-container",
   "license": "MIT",
   "author": "",
   "directories": {

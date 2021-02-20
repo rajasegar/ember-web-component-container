@@ -1,5 +1,6 @@
+/* globals require */
 import config from 'ember-get-config'
-import Ember from 'ember'
+import { guidFor } from '@ember/object/internals';
 
 let name = config.modulePrefix;
 
@@ -15,23 +16,24 @@ function _appendStyles(dest, styles) {
 }
 
 class ApplicationContainer extends HTMLElement {
-  #styles = (config.webComponentsAssets || {}).css
-  #shadowRoot
-  #application
+  //#shadowRoot
+  //#application
 
   constructor() {
     super()
-    this.#shadowRoot = this.attachShadow({mode: 'closed'})
+    this.styles = (config.webComponentsAssets || {}).css;
+    this.root = this.attachShadow({mode: 'closed'})
 
     // The 2 divs are a trick in how Ember finds their parent
     let rootParent = document.createElement('div')
-    _appendStyles(rootParent, this.#styles)
+    _appendStyles(rootParent, this.styles)
     let rootElement = document.createElement('div')
-    rootElement.setAttribute('data-ember-root-element', Ember.guidFor(this))
-    this.#shadowRoot.appendChild(rootParent)
+    rootElement.setAttribute('data-ember-root-element', guidFor(this))
+    this.root.appendChild(rootParent)
     rootParent.appendChild(rootElement)
 
     // Handle inner config
+      /*
     let configSource = this.querySelector('[data-json-config]').textContent
     let appConfig = JSON.parse(configSource)
 
@@ -40,31 +42,32 @@ class ApplicationContainer extends HTMLElement {
       return {...acc, [a.nodeName]: a.nodeValue }
     }, {})
     config.appConfig = { ...appConfig, ...attributes }
+    */
   }
 
   // Starts the app when an element is connected
   connectedCallback() {
-    if (this.#application || !this.isConnected) {
+    if (this.application || !this.isConnected) {
       return
     }
 
     let app = require(`${name}/app`).default.create({
-      rootElement: this.#shadowRoot.querySelector(`[data-ember-root-element="${Ember.guidFor(this)}"]`)
+      rootElement: this.root.querySelector(`[data-ember-root-element="${guidFor(this)}"]`)
     })
-    this.#application = app
+    this.application = app
   }
 
   // Destroy the app on disconnection of the node
   disconnectedCallback() {
-    if (!this.#application.isDestroyed && !this.#application.isDestroying) {
-      this.#application.destroy()
+    if (!this.application.isDestroyed && !this.application.isDestroying) {
+      this.application.destroy()
     }
   }
 
   // That makes the application accessible via:
   // document.querySelector('application-name').__EMBER_APPLICATION
   get __EMBER_APPLICATION() {
-    return this.#application
+    return this.application
   }
 }
 
